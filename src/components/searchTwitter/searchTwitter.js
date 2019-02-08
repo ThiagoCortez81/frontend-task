@@ -1,8 +1,10 @@
 //Importing React Lib
 import React, {Component} from 'react'
 import {Button, Col, FormControl, FormGroup, FormLabel, Row} from "react-bootstrap";
+import ModalStatistics from '../modalStatistics/modalStatistics'
 
 class SearchTwitter extends Component {
+
     addAtToTwitterUserName = () => {
         const elem = document.getElementById('search_twitter');
 
@@ -18,7 +20,7 @@ class SearchTwitter extends Component {
                 <Col md={6}>
                     <FormGroup>
                         <FormLabel>Twitter username:</FormLabel>
-                        <FormControl placeholder="Twitter username" id="search_twitter"
+                        <FormControl placeholder="Twitter username" id="search_twitter" value="@esp_interativo"
                                      onChange={e => this.addAtToTwitterUserName()}/>
                     </FormGroup>
                 </Col>
@@ -26,6 +28,7 @@ class SearchTwitter extends Component {
                     <FormGroup>
                         <br/>
                         <Button variant="twitter" className="mt-2" onClick={e => this.props.searchTweet()}>Search on Twitter</Button>
+                        <ModalStatistics tweetStatistics={this.props.tweetStatistics}/>
                     </FormGroup>
                 </Col>
             </Row>

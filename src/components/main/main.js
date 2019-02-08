@@ -7,10 +7,36 @@ import {Container} from 'react-bootstrap'
 //Importing custom components
 import SearchTwitter from '../searchTwitter/searchTwitter'
 import Twitter from "../../libs/custom-lib-twitter";
+import Tweet from 'react-tweet'
+import twttr from 'twitter-text'
+import {Row, Col} from "react-bootstrap";
 
 class Main extends Component {
 
+    constructor() {
+        super();
+
+        this.state = {
+            tweets: [],
+            tweets_statistics: [],
+            isLoading: false
+        }
+    }
+
+    applyResults = (json) => {
+        const objTweets = JSON.parse(JSON.stringify(json, null, 2));
+        this.setState({
+            'tweets': objTweets,
+            'isLoading': false
+        });
+
+        this.calculateStatistics();
+    };
+
     searchTweet = (tweetCount = 50) => {
+        this.setState({
+            'isLoading': true
+        });
         const twitterUser = document.querySelector("#search_twitter").value.replace('@', '');
 
         if (twitterUser !== '') {
@@ -41,25 +67,65 @@ class Main extends Component {
                 els.credentials.accessToken.trim(),
                 els.credentials.accessTokenSecret.trim()
             );
-
             const params = els.params;
 
-            const apply = (json) => {
-                els.result.value = JSON.stringify(json, null, 2)
-                console.log(JSON.parse(els.result.value));
-            };
             tw[els.method](`https://api.twitter.com/1.1/${els.endpoint.trim()}.json`, params)
-                .then(apply);
+                .then(this.applyResults);
         } else {
             alert('To continue, please send-us some twitter username!');
         }
+    };
+
+    calculateStatistics = () => {
+        const tweets = this.state.tweets;
+        let tweets_statistics = {
+            like_count: 0,
+            avg_likes: 0,
+            mentions: {}
+        };
+
+        for (const tweet of tweets) {
+            // console.log(tweet.text);
+            // sum of all likes
+            tweets_statistics.like_count += tweet.favorite_count;
+
+            // all mentions in tweets with number of unique occurences
+            const mentions = twttr.extractMentions(tweet.text);
+            for (const mention of mentions) {
+                if (mention in tweets_statistics.mentions) {
+                    tweets_statistics.mentions[mention] += 1;
+                } else {
+                    tweets_statistics.mentions[mention] = 1;
+                }
+            }
+        }
+        //average likes per tweet
+        tweets_statistics.avg_likes = tweets_statistics.like_count / tweets.length;
+
+        this.setState({tweets_statistics: tweets_statistics})
+    };
+
+    createTweets = () => {
+        let tweets = [];
+
+        for (let i = 0; i < this.state.tweets.length; i++) {
+            tweets.push(
+                <Col md={4}>
+                    <Tweet data={this.state.tweets[i]}/>
+                </Col>
+            );
+        }
+        return tweets
     };
 
     render() {
         return (
             <main>
                 <Container className="bg-white">
-                    <SearchTwitter searchTweet={this.searchTweet}/>
+                    <SearchTwitter tweetStatistics={this.state.tweets_statistics} searchTweet={this.searchTweet}/>
+                    <Row>
+                        {this.createTweets()}
+                    </Row>
                 </Container>
             </main>
         );
