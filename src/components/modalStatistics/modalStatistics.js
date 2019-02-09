@@ -19,7 +19,6 @@ class ModalStatistics extends Component {
     };
 
     handleShowModal = () => {
-        console.log(this.props.tweetStatistics);
         this.setState({showingModal: true});
     };
 
@@ -36,8 +35,6 @@ class ModalStatistics extends Component {
                 )
             }
         }
-
-        console.log(allMentions);
 
         return allMentions;
     };

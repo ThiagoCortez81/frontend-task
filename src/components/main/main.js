@@ -6,6 +6,7 @@ import {Container} from 'react-bootstrap'
 
 //Importing custom components
 import SearchTwitter from '../searchTwitter/searchTwitter'
+import FilterTweet from '../filter/filterTweet'
 import Twitter from "../../libs/custom-lib-twitter";
 import Tweet from 'react-tweet'
 import twttr from 'twitter-text'
@@ -29,6 +30,8 @@ class Main extends Component {
             'tweets': objTweets,
             'isLoading': false
         });
+
+        console.log(this.state.tweets);
 
         this.calculateStatistics();
     };
@@ -85,7 +88,6 @@ class Main extends Component {
         };
 
         for (const tweet of tweets) {
-            // console.log(tweet.text);
             // sum of all likes
             tweets_statistics.like_count += tweet.favorite_count;
 
@@ -118,11 +120,43 @@ class Main extends Component {
         return tweets
     };
 
+    orderTweets = (elem) => {
+        let tweets = this.state.tweets;
+
+        //sort by date and the number of likes
+        if (elem.value === "0")
+            tweets.sort(function (first, second) {
+                const firstDate = new Date(first.created_at);
+                const secondDate = new Date(second.created_at);
+
+                return secondDate.getTime() - firstDate.getTime();
+            });
+        else if (elem.value === "1")
+            tweets.sort(function (first, second) {
+                const firstDate = new Date(first.created_at);
+                const secondDate = new Date(second.created_at);
+
+                return firstDate.getTime() - secondDate.getTime();
+            });
+        else if (elem.value === "2")
+            tweets.sort(function (first, second) {
+                return first.favorite_count - second.favorite_count;
+            });
+        else if (elem.value === "3")
+            tweets.sort(function (first, second) {
+                return second.favorite_count - first.favorite_count;
+            });
+
+        this.setState({tweets: tweets});
+    };
+
     render() {
         return (
             <main>
                 <Container className="bg-white">
-                    <SearchTwitter tweetStatistics={this.state.tweets_statistics} searchTweet={this.searchTweet}/>
+                    <SearchTwitter orderTweets={this.orderTweets} tweetStatistics={this.state.tweets_statistics}
+                                   searchTweet={this.searchTweet}/>
+                    <FilterTweet/>
                     <Row>
                         {this.createTweets()}
                     </Row>
