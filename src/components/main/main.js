@@ -19,6 +19,7 @@ class Main extends Component {
 
         this.state = {
             tweets: [],
+            original_tweets: [],
             tweets_statistics: [],
             isLoading: false
         }
@@ -28,6 +29,7 @@ class Main extends Component {
         const objTweets = JSON.parse(JSON.stringify(json, null, 2));
         this.setState({
             'tweets': objTweets,
+            'original_tweets': objTweets,
             'isLoading': false
         });
 
@@ -109,11 +111,12 @@ class Main extends Component {
 
     createTweets = () => {
         let tweets = [];
+        const linkProps = {target: '_blank', rel: 'noreferrer'}
 
         for (let i = 0; i < this.state.tweets.length; i++) {
             tweets.push(
                 <Col md={4}>
-                    <Tweet data={this.state.tweets[i]}/>
+                    <Tweet linkProps={linkProps} data={this.state.tweets[i]}/>
                 </Col>
             );
         }
@@ -150,13 +153,76 @@ class Main extends Component {
         this.setState({tweets: tweets});
     };
 
+    applyFilter = () => {
+        let insertDate = document.querySelector('#date-filter').value;
+        let tweetLenght = document.querySelector('#tweet-lenght-filter').value;
+        let favoriteCount = document.querySelector('#favorite-cont-filter').value;
+        let mentionCount = document.querySelector('#mention-filter').value;
+        let hashtagCount = document.querySelector('#hashtag-filter').value;
+        const tweets = this.state.original_tweets;
+        let newTweets = [];
+
+        if (insertDate !== '') {
+            insertDate = new Date(insertDate).setHours(0, 0, 0, 0);
+        }
+
+
+        for (const tweet of tweets) {
+            let flag = false;
+
+            const tweetDate = new Date(tweet.created_at).setHours(0, 0, 0, 0);
+            if (insertDate === tweetDate && insertDate !== '')
+                flag = true;
+            if ((tweet.text).length === parseFloat(tweetLenght) && tweetLenght !== '')
+                flag = true;
+            if (tweet.favorite_count === parseFloat(favoriteCount) && favoriteCount !== '')
+                flag = true;
+            if (this.getMentionsNumber(tweet.text) === parseFloat(mentionCount) && mentionCount !== '')
+                flag = true;
+            if (this.getHashtagsNumber(tweet.text) === parseFloat(hashtagCount) && hashtagCount !== '')
+                flag = true;
+
+            if (flag)
+                newTweets.push(tweet);
+
+            if (newTweets.length !== 0 || (insertDate !== '' || tweetLenght !== '' || favoriteCount !== '' || mentionCount !== '' || hashtagCount !== ''))
+                this.setState({
+                    tweets: newTweets
+                });
+            else
+                this.setState({
+                    tweets: tweets
+                });
+        }
+    };
+
+    getMentionsNumber = (str) => {
+        var pattern = /\B@[a-z0-9_-]+/gi;
+        const matches = str.match(pattern);
+
+        if (matches !== null && matches !== undefined)
+            return matches.length;
+
+        return 0;
+    };
+
+    getHashtagsNumber = (str) => {
+        var pattern = /\B#[a-z0-9_-]+/gi;
+        const matches = str.match(pattern);
+
+        if (matches !== null && matches !== undefined)
+            return matches.length;
+
+        return 0;
+    };
+
     render() {
         return (
             <main>
                 <Container className="bg-white">
                     <SearchTwitter orderTweets={this.orderTweets} tweetStatistics={this.state.tweets_statistics}
                                    searchTweet={this.searchTweet}/>
-                    <FilterTweet/>
+                    <FilterTweet applyFilter={this.applyFilter}/>
                     <Row>
                         {this.createTweets()}
                     </Row>

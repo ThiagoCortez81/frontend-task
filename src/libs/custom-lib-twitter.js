@@ -20,7 +20,7 @@ const Twitter = (() => {
                 script.src = `${url}?${buildQuery(components)}`;
                 script.addEventListener('error', reject);
                 window[callback] = resolve;
-                setTimeout(reject, 3000);
+                setTimeout(reject, 10000);
             })
 
                 .then(json => {

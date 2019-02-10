@@ -20,7 +20,7 @@ class SearchTwitter extends Component {
                 <Col md={6}>
                     <FormGroup>
                         <FormLabel>Twitter username:</FormLabel>
-                        <FormControl placeholder="Twitter username" id="search_twitter" value="@esp_interativo"
+                        <FormControl placeholder="Twitter username" id="search_twitter"
                                      onChange={e => this.addAtToTwitterUserName()}/>
                     </FormGroup>
                 </Col>
