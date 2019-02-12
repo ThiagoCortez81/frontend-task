@@ -11,6 +11,7 @@ import Twitter from "../../libs/custom-lib-twitter";
 import Tweet from 'react-tweet'
 import twttr from 'twitter-text'
 import {Row, Col} from "react-bootstrap";
+import {defer} from "q";
 
 class Main extends Component {
 
@@ -143,11 +144,11 @@ class Main extends Component {
             });
         else if (elem.value === "2")
             tweets.sort(function (first, second) {
-                return first.favorite_count - second.favorite_count;
+                return second.favorite_count - first.favorite_count;
             });
         else if (elem.value === "3")
             tweets.sort(function (first, second) {
-                return second.favorite_count - first.favorite_count;
+                return first.favorite_count - second.favorite_count;
             });
 
         this.setState({tweets: tweets});
@@ -155,10 +156,15 @@ class Main extends Component {
 
     applyFilter = () => {
         let insertDate = document.querySelector('#date-filter').value;
+        let insertDateType = parseInt(document.querySelector('#date-filter-type').value);
         let tweetLenght = document.querySelector('#tweet-lenght-filter').value;
+        let tweetLenghtType = parseInt(document.querySelector('#tweet-lenght-filter-type').value);
         let favoriteCount = document.querySelector('#favorite-cont-filter').value;
+        let favoriteCountType = parseInt(document.querySelector('#favorite-cont-filter-type').value);
         let mentionCount = document.querySelector('#mention-filter').value;
+        let mentionCountType = parseInt(document.querySelector('#mention-filter-type').value);
         let hashtagCount = document.querySelector('#hashtag-filter').value;
+        let hashtagCountType = parseInt(document.querySelector('#hashtag-filter-type').value);
         const tweets = this.state.original_tweets;
         let newTweets = [];
 
@@ -169,31 +175,252 @@ class Main extends Component {
 
         for (const tweet of tweets) {
             let flag = false;
+            let stop = false;
 
             const tweetDate = new Date(tweet.created_at).setHours(0, 0, 0, 0);
-            if (insertDate === tweetDate && insertDate !== '')
-                flag = true;
-            if ((tweet.text).length === parseFloat(tweetLenght) && tweetLenght !== '')
-                flag = true;
-            if (tweet.favorite_count === parseFloat(favoriteCount) && favoriteCount !== '')
-                flag = true;
-            if (this.getMentionsNumber(tweet.text) === parseFloat(mentionCount) && mentionCount !== '')
-                flag = true;
-            if (this.getHashtagsNumber(tweet.text) === parseFloat(hashtagCount) && hashtagCount !== '')
-                flag = true;
+            if (insertDate !== '') {
+                if (insertDateType === 0) {
+                    if (insertDate === tweetDate) {
+                        flag = true;
+                    } else {
+                        flag = false;
+                        stop = true;
+                    }
+                } else if (insertDateType === 1) {
+                    if (insertDate !== tweetDate) {
+                        flag = true;
+                    } else {
+                        flag = false;
+                        stop = true;
+                    }
+                } else if (insertDateType === 2) {
+                    if (insertDate < tweetDate) {
+                        flag = true;
+                    } else {
+                        flag = false;
+                        stop = true;
+                    }
+                } else if (insertDateType === 3) {
+                    if (insertDate <= tweetDate) {
+                        flag = true;
+                    } else {
+                        flag = false;
+                        stop = true;
+                    }
+                } else if (insertDateType === 4) {
+                    if (insertDate > tweetDate) {
+                        flag = true;
+                    } else {
+                        flag = false;
+                        stop = true;
+                    }
+                } else if (insertDateType === 5) {
+                    if (insertDate >= tweetDate) {
+                        flag = true;
+                    } else {
+                        flag = false;
+                        stop = true;
+                    }
+                }
+            }
+
+            if (tweetLenght !== '' && !stop) {
+                if (tweetLenghtType === 0) {
+                    if ((tweet.text).length === parseFloat(tweetLenght)) {
+                        flag = true;
+                    } else {
+                        flag = false;
+                        stop = true;
+                    }
+                } else if (tweetLenghtType === 1) {
+                    if ((tweet.text).length !== parseFloat(tweetLenght)) {
+                        flag = true;
+                    } else {
+                        flag = false;
+                        stop = true;
+                    }
+                } else if (tweetLenghtType === 2) {
+                    if ((tweet.text).length < parseFloat(tweetLenght)) {
+                        flag = true;
+                    } else {
+                        flag = false;
+                        stop = true;
+                    }
+                } else if (tweetLenghtType === 3) {
+                    if ((tweet.text).length <= parseFloat(tweetLenght)) {
+                        flag = true;
+                    } else {
+                        flag = false;
+                        stop = true;
+                    }
+                } else if (tweetLenghtType === 4) {
+                    if ((tweet.text).length > parseFloat(tweetLenght)) {
+                        flag = true;
+                    } else {
+                        flag = false;
+                        stop = true;
+                    }
+                } else if (tweetLenghtType === 5) {
+                    if ((tweet.text).length >= parseFloat(tweetLenght)) {
+                        flag = true;
+                    } else {
+                        flag = false;
+                        stop = true;
+                    }
+                }
+            }
+
+            if (favoriteCount !== '' && !stop) {
+                if (favoriteCountType === 0) {
+                    if (tweet.favorite_count === parseFloat(favoriteCount)) {
+                        console.log("wntrou");
+                        flag = true;
+                    } else {
+                        flag = false;
+                        stop = true;
+                    }
+                } else if (favoriteCountType === 1) {
+                    if (tweet.favorite_count !== parseFloat(favoriteCount)) {
+                        flag = true;
+                    } else {
+                        flag = false;
+                        stop = true;
+                    }
+                } else if (favoriteCountType === 2) {
+                    if (tweet.favorite_count > parseFloat(favoriteCount)) {
+                        flag = true;
+                    } else {
+                        flag = false;
+                        stop = true;
+                    }
+                } else if (favoriteCountType === 3) {
+                    if (tweet.favorite_count >= parseFloat(favoriteCount)) {
+                        flag = true;
+                    } else {
+                        flag = false;
+                        stop = true;
+                    }
+                } else if (favoriteCountType === 4) {
+                    if (tweet.favorite_count < parseFloat(favoriteCount)) {
+                        flag = true;
+                    } else {
+                        flag = false;
+                        stop = true;
+                    }
+                } else if (favoriteCountType === 5) {
+                    if (tweet.favorite_count <= parseFloat(favoriteCount)) {
+                        flag = true;
+                    } else {
+                        flag = false;
+                        stop = true;
+                    }
+                }
+            }
+
+            if (mentionCount !== '' && !stop) {
+                if (mentionCountType === 0) {
+                    if (this.getMentionsNumber(tweet.text) === parseFloat(mentionCount)) {
+                        flag = true;
+                    } else {
+                        flag = false;
+                        stop = true;
+                    }
+                } else if (mentionCountType === 1) {
+                    if (this.getMentionsNumber(tweet.text) !== parseFloat(mentionCount)) {
+                        flag = true;
+                    } else {
+                        flag = false;
+                        stop = true;
+                    }
+                } else if (mentionCountType === 2) {
+                    if (this.getMentionsNumber(tweet.text) > parseFloat(mentionCount)) {
+                        flag = true;
+                    } else {
+                        flag = false;
+                        stop = true;
+                    }
+                } else if (mentionCountType === 3) {
+                    if (this.getMentionsNumber(tweet.text) >= parseFloat(mentionCount)) {
+                        flag = true;
+                    } else {
+                        flag = false;
+                        stop = true;
+                    }
+                } else if (mentionCountType === 4) {
+                    if (this.getMentionsNumber(tweet.text) < parseFloat(mentionCount)) {
+                        flag = true;
+                    } else {
+                        flag = false;
+                        stop = true;
+                    }
+                } else if (mentionCountType === 5) {
+                    if (this.getMentionsNumber(tweet.text) <= parseFloat(mentionCount)) {
+                        flag = true;
+                    } else {
+                        flag = false;
+                        stop = true;
+                    }
+                }
+            }
+
+            if (hashtagCount !== '' && !stop) {
+                if (hashtagCountType === 0) {
+                    if (this.getHashtagsNumber(tweet.text) === parseFloat(hashtagCount)) {
+                        flag = true;
+                    } else {
+                        flag = false;
+                        stop = true;
+                    }
+                } else if (hashtagCountType === 1) {
+                    if (this.getHashtagsNumber(tweet.text) !== parseFloat(hashtagCount)) {
+                        flag = true;
+                    } else {
+                        flag = false;
+                        stop = true;
+                    }
+                } else if (hashtagCountType === 2) {
+                    if (this.getHashtagsNumber(tweet.text) > parseFloat(hashtagCount)) {
+                        flag = true;
+                    } else {
+                        flag = false;
+                        stop = true;
+                    }
+                } else if (hashtagCountType === 3) {
+                    if (this.getHashtagsNumber(tweet.text) >= parseFloat(hashtagCount)) {
+                        flag = true;
+                    } else {
+                        flag = false;
+                        stop = true;
+                    }
+                } else if (hashtagCountType === 4) {
+                    if (this.getHashtagsNumber(tweet.text) < parseFloat(hashtagCount)) {
+                        flag = true;
+                    } else {
+                        flag = false;
+                        stop = true;
+                    }
+                } else if (hashtagCountType === 5) {
+                    if (this.getHashtagsNumber(tweet.text) <= parseFloat(hashtagCount)) {
+                        flag = true;
+                    } else {
+                        flag = false;
+                        stop = true;
+                    }
+                }
+            }
 
             if (flag)
                 newTweets.push(tweet);
-
-            if (newTweets.length !== 0 || (insertDate !== '' || tweetLenght !== '' || favoriteCount !== '' || mentionCount !== '' || hashtagCount !== ''))
-                this.setState({
-                    tweets: newTweets
-                });
-            else
-                this.setState({
-                    tweets: tweets
-                });
         }
+
+        if (newTweets.length !== 0 || (insertDate !== '' || tweetLenght !== '' || favoriteCount !== '' || mentionCount !== '' || hashtagCount !== ''))
+            this.setState({
+                tweets: newTweets
+            });
+        else
+            this.setState({
+                tweets: tweets
+            });
     };
 
     getMentionsNumber = (str) => {
@@ -215,6 +442,10 @@ class Main extends Component {
 
         return 0;
     };
+
+    componentDidMount() {
+        this.orderTweets(document.querySelector("#selection-tweet-order"));
+    }
 
     render() {
         return (

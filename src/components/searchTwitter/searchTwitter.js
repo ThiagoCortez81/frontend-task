@@ -35,7 +35,8 @@ class SearchTwitter extends Component {
 
                 <Col md={2}>
                     <FormLabel>Order by:</FormLabel>
-                    <FormControl as="select" onChange={e => this.props.orderTweets(e.target)}>
+                    <FormControl as="select" id="selection-tweet-order"
+                                 onChange={e => this.props.orderTweets(e.target)}>
                         <option value="0">Date - descending</option>
                         <option value="1">Date - ascending</option>
                         <option value="2">Likes - descending</option>
