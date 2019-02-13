@@ -13,7 +13,7 @@ const Header = () => (
                 </Navbar.Brand>
                 <Nav className="float-right">
                     <NavItem>
-                        <a href="" className="text-white">Close</a>
+                        <a href="javascript: window.close();" className="text-white">Close</a>
                     </NavItem>
                 </Nav>
             </Container>
