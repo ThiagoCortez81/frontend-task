@@ -42,8 +42,9 @@ class ModalStatistics extends Component {
     render() {
         return (
             <>
-                <Button variant="tallMentionswitter" className="mt-2" onClick={this.handleShowModal}>Search
-                    statistics</Button>
+                <Button variant="light" className="mt-2" onClick={() => {
+                    (this.props.tweetStatistics.length === undefined) ? this.handleShowModal() : alert("To continue, please provide a twitter @username!");
+                }}>Search statistics</Button>
 
                 <Modal show={this.state.showingModal} onHide={this.handleCloseModal}>
                     <Modal.Header closeButton>

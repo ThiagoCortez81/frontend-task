@@ -12,7 +12,8 @@ class FilterTweet extends Component {
         super(props);
 
         this.state = {
-            startDate: null
+            startDate: null,
+            showFilter: false
         };
         this.handleChange = this.handleChange.bind(this);
     }
@@ -37,54 +38,70 @@ class FilterTweet extends Component {
         return options;
     };
 
+    handleFilter = () => {
+        console.log(this.state.showFilter);
+        this.setState({showFilter: !this.state.showFilter})
+    };
+
     render() {
         return (
-            <Row>
-                <Col md={12}>
-                    Filter by: <small>(leave blank if you doesn't need the filter)</small>
-                </Col>
-                <Col md={2}>
-                    <FormLabel>Date</FormLabel>
-                    <DatePicker id="date-filter"
-                                placeholderText='Date'
-                                selected={this.state.startDate}
-                                onChange={this.handleChange}/>
-                    <FormControl as="select" id="date-filter-type">
-                        {this.mountFilterType()}
-                    </FormControl>
-                </Col>
-                <Col md={2}>
-                    <FormLabel>Tweet size</FormLabel>
-                    <FormControl type="number" placeholder="Tweet size" id="tweet-lenght-filter"/>
-                    <FormControl as="select" id="tweet-lenght-filter-type">
-                        {this.mountFilterType()}
-                    </FormControl>
-                </Col>
-                <Col md={2}>
-                    <FormLabel>Likes</FormLabel>
-                    <FormControl type="number" placeholder="Likes" id="favorite-cont-filter"/>
-                    <FormControl as="select" id="favorite-cont-filter-type">
-                        {this.mountFilterType()}
-                    </FormControl>
-                </Col>
-                <Col md={2}>
-                    <FormLabel>Mentions</FormLabel>
-                    <FormControl type="number" placeholder="Mentions" id="mention-filter"/>
-                    <FormControl as="select" id="mention-filter-type">
-                        {this.mountFilterType()}
-                    </FormControl>
-                </Col>
-                <Col md={2}>
-                    <FormLabel>Hashtag</FormLabel>
-                    <FormControl type="number" placeholder="Hashtag" id="hashtag-filter"/>
-                    <FormControl as="select" id="hashtag-filter-type">
-                        {this.mountFilterType()}
-                    </FormControl>
-                </Col>
-                <Col md={2}>
-                    <Button className="btn btn-secondary mt-2-rem" onClick={this.props.applyFilter}>Filter IT!</Button>
-                </Col>
-            </Row>
+            <>
+                <div className='w-100 text-center'>
+                    <Button variant={"light"} onClick={this.handleFilter}>Show/Hide Filters...</Button>
+                </div>
+
+                <Row id="filter_section" className="mb-2">
+                    {this.state.showFilter ?
+                        <>
+                            <Col md={12}>
+                                Filter by: <small>(leave blank if you doesn't need the filter)</small>
+                            </Col>
+                            <Col md={2}>
+                                <FormLabel>Date</FormLabel>
+                                <DatePicker id="date-filter"
+                                            placeholderText='Date'
+                                            selected={this.state.startDate}
+                                            onChange={this.handleChange}/>
+                                <FormControl as="select" id="date-filter-type">
+                                    {this.mountFilterType()}
+                                </FormControl>
+                            </Col>
+                            <Col md={2}>
+                                <FormLabel>Tweet size</FormLabel>
+                                <FormControl type="number" placeholder="Tweet size" id="tweet-lenght-filter"/>
+                                <FormControl as="select" id="tweet-lenght-filter-type">
+                                    {this.mountFilterType()}
+                                </FormControl>
+                            </Col>
+                            <Col md={2}>
+                                <FormLabel>Likes</FormLabel>
+                                <FormControl type="number" placeholder="Likes" id="favorite-cont-filter"/>
+                                <FormControl as="select" id="favorite-cont-filter-type">
+                                    {this.mountFilterType()}
+                                </FormControl>
+                            </Col>
+                            <Col md={2}>
+                                <FormLabel>Mentions</FormLabel>
+                                <FormControl type="number" placeholder="Mentions" id="mention-filter"/>
+                                <FormControl as="select" id="mention-filter-type">
+                                    {this.mountFilterType()}
+                                </FormControl>
+                            </Col>
+                            <Col md={2}>
+                                <FormLabel>Hashtag</FormLabel>
+                                <FormControl type="number" placeholder="Hashtag" id="hashtag-filter"/>
+                                <FormControl as="select" id="hashtag-filter-type">
+                                    {this.mountFilterType()}
+                                </FormControl>
+                            </Col>
+                            <Col md={2}>
+                                <Button className="btn btn-secondary mt-2-rem" onClick={this.props.applyFilter}>Filter
+                                    IT!</Button>
+                            </Col>
+                        </>
+                        : null}
+                </Row>
+            </>
         )
     }
 }

@@ -32,7 +32,7 @@ const Twitter = (() => {
                 .catch(e => {
                     document.body.removeChild(script);
                     delete window[callback];
-                    throw {error: `${e ? 'Load' : 'Timeout'} Error (This is a dummy message)`};
+                    throw {error: `Oops! Look likes that the username that you inserted doesn't exists or the solicitation timed out!`};
                 });
         }
 
@@ -80,7 +80,7 @@ const Twitter = (() => {
                 .catch(json => {
                     document.body.removeChild(iframe);
                     document.body.removeChild(form);
-                    throw {error: `Load Error (This is a dummy message)`};
+                    throw {error: `Look likes that the username that you inserted doesn't exists or the solicitation timed out`};
                 });
         }
     }

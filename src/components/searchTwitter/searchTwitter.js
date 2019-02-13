@@ -24,11 +24,17 @@ class SearchTwitter extends Component {
                                      onChange={e => this.addAtToTwitterUserName()}/>
                     </FormGroup>
                 </Col>
-                <Col md={4}>
+                <Col md={2}>
                     <FormGroup>
-                        <br/>
-                        <Button variant="twitter" className="mt-2" onClick={e => this.props.searchTweet()}>Search on
-                            Twitter</Button>
+                        <br className="d-none d-md-block"/>
+                        <Button variant="twitter" className="mt-2"
+                                onClick={e => this.props.searchTweet()}>Search!</Button>
+                    </FormGroup>
+                </Col>
+
+                <Col md={2}>
+                    <FormGroup>
+                        <br className="d-none d-md-block"/>
                         <ModalStatistics tweetStatistics={this.props.tweetStatistics}/>
                     </FormGroup>
                 </Col>

@@ -1,6 +1,7 @@
 {
   "name": "roi-hunter",
   "version": "0.1.0",
+  "author": "Thiago Cortez",
   "private": true,
   "dependencies": {
     "crypto-js": "^3.1.9-1",
